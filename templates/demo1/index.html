@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+	{% load static %}
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<title>Atlantis Lite - Bootstrap 4 Admin Dashboard</title>
+	<meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
+	<link rel="icon" href="{% static "/assets/img/icon.ico" %}" type="image/x-icon"/>
+	<script src="https://kit.fontawesome.com/yourcode.js" crossorigin="anonymous"></script>
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+	<!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+	<!-- Fonts and icons -->
+	<script src="{% static "/assets/js/plugin/webfont/webfont.min.js" %}"></script>
+	<script>
+		WebFont.load({
+			google: {"families":["Lato:300,400,700,900"]},
+			custom: {"families":["Flaticon", "Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands", "simple-line-icons"], urls: ['../assets/css/fonts.min.css']},
+			active: function() {
+				sessionStorage.fonts = true;
+			}
+		});
+	</script>
+
+	<!-- CSS Files -->
+	<link rel="stylesheet" href="{% static "/assets/css/bootstrap.min.css" %}">
+	<link rel="stylesheet" href="{% static "/assets/css/atlantis.min.css" %}">
+
+	<!-- CSS Just for demo purpose, don't include it in your project -->
+	<link rel="stylesheet" href="{% static "/assets/css/demo.css" %}">
+</head>
+<body>
+	
+
+		<div class="row">
+			<div class="col-12">
+
+					<div class="content">
+						<div class="panel-header bg-primary-gradient">
+							<div class="page-inner py-5">
+								<div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+									<div>
+										<h2 class="text-white pb-2 fw-bold">Dashboard</h2>
+									</div>
+									
+								</div>
+							</div>
+						</div>
+						<div class="page-inner mt--5">
+							<div class="row mt--2">
+								<div class="col-md-6">
+									<div class="card full-height">
+										<div class="card-body">
+											<div class="card-title">Today statistics</div>
+											<div class="card-category">Daily information about statistics in system</div>
+											<div class="d-flex flex-wrap justify-content-around pb-2 pt-4">
+												<div class="px-2 pb-2 pb-md-0 text-center">
+													<div id="circles-1"></div>
+													<h6 class="fw-bold mt-3 mb-0">Total Customers </h6>
+												</div>
+												<div class="px-2 pb-2 pb-md-0 text-center">
+													<div id="circles-2"></div>
+													<h6 class="fw-bold mt-3 mb-0">Total Order</h6>
+												</div>
+												<div class="px-2 pb-2 pb-md-0 text-center">
+													<div id="circles-3"></div>
+													<h6 class="fw-bold mt-3 mb-0">Total Customer</h6>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="card full-height">
+										<div class="card-body">
+											<div class="card-title">Today Revenue and Calculation</div>
+											<div class="row py-3">
+												<div class="col-md-4 d-flex flex-column justify-content-around">
+													<div>
+														<h6 class="fw-bold text-uppercase text-success op-8">Today Total Revenue</h6>
+														<h3 class="fw-bold">{{indian_rupee}}{{TodayRevenue}}
+															{% if TodayRevenue < YesterdayRevenue %}
+															<spam style='color:red'>(- {{indian_rupee}}{{diff}})<spam>
+															
+															{% else %} 
+															<spam style='color:green'> (+{{indian_rupee}}{{diff}})<spam>
+
+															{% endif %}
+
+														</h3>
+													</div>
+													<div>
+														<h6 class="fw-bold text-uppercase text-danger op-8">Yesteray Total Income</h6>
+														<h3 class="fw-bold">{{indian_rupee}}{{YesterdayRevenue}}</h3>
+													</div>
+												</div>
+												<div class="col-md-8">
+													<div id="chart-container">
+														<canvas id="totalIncomeChart"></canvas>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							
+							<div class="row">
+								<div class="col-md-4">
+									<div class="card">
+										<div class="card-header">
+											<div class="card-title">Today most sold categories </div>
+										</div>
+										<div class="card-body pb-0">
+											{% if MSC %}
+											{% for y in MSC %}
+
+											<div class="d-flex">
+												
+												<div class="flex-1 pt-1 ml-2">
+													<h3 class="fw-bold mb-1">{{ y.MSC }}</h3>
+													
+												</div>
+												<div class="d-flex ml-auto align-items-center">
+													<h3 class="text-info fw-bold">+$17</h3>
+												</div>
+											</div>
+											
+											{% endfor %} 
+												  {% endif %}
+											<div class="separator-dashed"></div>
+											<div class="pull-in">
+												<canvas id="topProductsChart"></canvas>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="card">
+										<div class="card-body">
+											<div class="card-title fw-mediumbold">Today most sold Product</div>
+											<div class="card-list">
+												{% if MSI %}
+												{% for i in MSI %}
+												<div class="item-list">
+													
+													<div class="info-user ml-3">
+														<h3 class="fw-bold mb-1">{{ i.MostSaleItem }}</h3>
+													</div>
+													<button class="btn btn-icon btn-primary btn-round btn-xs">
+														<i class="fa fa-plus"></i>
+													</button>
+												</div>
+												{% endfor %} 
+												{% endif %}
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="card card-primary bg-primary-gradient">
+										<div class="card-body">
+											<h2 class="mb-4 fw-bold">Quantity of Item sale count</h2>
+											<h2 class="mb-4 fw-bold">{{Iqty}}</h2>
+											<h4 class="mt-3 b-b1 pb-2 mb-4 fw-bold">Today Most Sale item</h4>
+											<h2 class="mb-4 fw-bold">{{MoCatToday}}</h2>
+											<h4 class="mt-3 b-b1 pb-2 mb-4 fw-bold">Today least of Sale item</h4>
+											<h2 class="mb-4 fw-bold">{{xy}}</h2>
+										
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-md-7">
+									<div class="card">
+										<div class="card-header">
+											<div class="card-title">Top Selling Products of Last Weekday {{xy}}</div>
+										</div>
+										<div class="card-body pb-0">
+											<div class="table-responsive table-hover table-sales">
+												<table class="table">
+													<thead class="thead-dark">
+														<tr>
+														  <th scope="col"><h3>Monday</h3></th>
+														  <th scope="col"><h3>Tuesday</h3></th>
+														  <th scope="col"><h3>Wednesday</h3></th>
+														  <th scope="col"><h3>Thursday</h3></th>
+														</tr>
+													  </thead>
+													<tbody>
+														{% if data %}
+														{% for x in data %}
+														<tr>
+														
+															<td><h3>{{x.Monday}}</h3></td>
+															<td><h3>{{x.Tuesday}}</h3></td>
+															<td><h3>{{x.Wednesday}}</h3></td>
+															<td><h3>{{x.Thursday}}</h3></td>
+														
+														  </tr>
+														{% endfor %} 
+														{% endif %}												
+														</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-5">
+									<div class="card">
+										<div class="card-header">
+											<div class="card-title">Top Selling Products of Last Weekend</div>
+										</div>
+										<div class="card-body pb-0">
+											<div class="table-responsive table-hover table-sales">
+												<table class="table">
+													<thead class="thead-dark">
+														<tr>
+														  <th scope="col"><h3>Friday</h3></th>
+														  <th scope="col"><h3>Saturday</h3></th>
+														  <th scope="col"><h3>Sunday</h3></th>
+														  
+														</tr>
+													  </thead>
+													<tbody>
+														{% if data %}
+														{% for x in data %}
+														<tr >
+														
+															<td><h3> {{ x.Friday }} </h3> </td>
+															<td> <h3> {{ x.Saturday }}</h3></td>
+															<td> <h3> {{ x.Sunday }}</h3> </td>
+														
+														
+														  </tr>
+														{% endfor %} 
+														{% endif %}												
+														</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>	
+							
+							</div>
+
+
+
+							<div class="row">
+								<div class="col-md-8">
+									<div class="card">
+										<div class="card-header">
+											<div class="card-head-row">
+												<div class="card-title">Previous 3 month  stats{{a}}</div>
+												<div class="card-tools">
+													<a href="#" class="btn btn-info btn-border btn-round btn-sm mr-2">
+														<span class="btn-label">
+															<i class="fa fa-pencil"></i>
+														</span>
+														Export
+													</a>
+													<a href="#" class="btn btn-info btn-border btn-round btn-sm">
+														<span class="btn-label">
+															<i class="fa fa-print"></i>
+														</span>
+														Print
+													</a>
+												</div>
+											</div>
+										</div>
+										<div class="card-body">
+											<div class="chart-container" style="min-height: 375px">
+												<canvas id="statisticsChart"></canvas>
+											</div>
+											<div id="myChartLegend"></div>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-4">
+									<div class="card card-primary">
+										<div class="card-header">
+											<div class="card-title">Avergae Daily Sales</div>
+											<div class="card-category">March 01 - March 22</div>
+										</div>
+										<div class="card-body pb-0">
+											<div class="mb-4 mt-2">
+												<h1>{{indian_rupee}}{{MonthAve}}</h1>
+											</div>
+											<div class="pull-in">
+												<canvas id="dailySalesChart"></canvas>
+											</div>
+										</div>
+									</div>
+									<div class="card">
+										<div class="card-body pb-0">
+											<div class="h1 fw-bold float-right text-warning">+7%</div>
+											<h2 class="mb-2">213</h2>
+											<p class="text-muted">Per Day Transactions(Which Compare to previous day and show + or -</p>
+											<div class="pull-in sparkline-fix">
+												<div id="lineChart"></div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row row-card-no-pd">
+								<div class="col-md-12">
+									<div class="card">
+										<div class="card-header">
+											<div class="card-head-row card-tools-still-right">
+												<h4 class="card-title">Table of the 10 eatable product of whole Month</h4>
+												<div class="card-tools">
+													<button class="btn btn-icon btn-link btn-primary btn-xs"><span class="fa fa-angle-down"></span></button>
+													<button class="btn btn-icon btn-link btn-primary btn-xs btn-refresh-card"><span class="fa fa-sync-alt"></span></button>
+													<button class="btn btn-icon btn-link btn-primary btn-xs"><span class="fa fa-times"></span></button>
+												</div>
+											</div>
+											
+										</div>
+										<div class="card-body">
+											<div class="row">
+												<div class="col-md-4">
+													<h2>Regular Item</h2>
+													<div class="table-responsive table-hover table-sales">
+														<table class="table">
+															<thead class="thead-dark">
+																<tr>
+																  <th scope="col"><h3>Menu Item</h3></th>
+																  <th scope="col"><h3>Sale</h3></th>
+															
+															  </thead>
+															<tbody>
+																{% if Item_M %}
+																{% for x in Item_M %}
+																<tr>
+																
+																	<td><h3>{{x.Item}}</h3></td>
+																	<td><h3>{{x.Sales}}</h3></td>
+																
+																  </tr>
+																{% endfor %} 
+																{% endif %}												
+																</tbody>
+														</table>
+													</div>
+													
+												</div>
+												<div class="col-md-4">
+													<h2>Specialist Item</h2>
+													<div class="table-responsive table-hover table-sales">
+														<table class="table">
+															<thead class="thead-dark">
+																<tr>
+																  <th scope="col"><h3>Menu Item</h3></th>
+																  <th scope="col"><h3>Sale</h3></th>
+															
+															  </thead>
+															<tbody>
+																{% if ItemSP %}
+																{% for x in ItemSP %}
+																<tr>
+																
+																	<td><h3>{{x.Item}}</h3></td>
+																	<td><h3>{{x.Sales}}</h3></td>
+																
+																  </tr>
+																{% endfor %} 
+																{% endif %}												
+																</tbody>
+														</table>
+													</div>
+													
+														
+													
+
+												</div>
+												<div class="col-md-4">
+													<h2>Expensive Item</h2>
+													<div class="table-responsive table-hover table-sales">
+														<table class="table">
+															<thead class="thead-dark">
+																<tr>
+																  <th scope="col"><h3>Menu Item</h3></th>
+																  <th scope="col"><h3>Sale</h3></th>
+															
+															  </thead>
+															<tbody>
+																{% if ItemEP %}
+																{% for x in ItemEP %}
+																<tr>
+																
+																	<td><h3>{{x.Item}}</h3></td>
+																	<td><h3>{{x.Sales}}</h3></td>
+																
+																  </tr>
+																{% endfor %} 
+																{% endif %}												
+																</tbody>
+														</table>
+													</div>
+													
+														
+													
+
+												</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+
+							
+
+							<div class="row row-card-no-pd">
+								<div class="col-md-12">
+									<div class="card">
+										<div class="card-header">
+											<div class="card-head-row card-tools-still-right">
+												<h4 class="card-title">Table of the 5 category of product of whole month</h4>
+												<div class="card-tools">
+													<button class="btn btn-icon btn-link btn-primary btn-xs"><span class="fa fa-angle-down"></span></button>
+													<button class="btn btn-icon btn-link btn-primary btn-xs btn-refresh-card"><span class="fa fa-sync-alt"></span></button>
+													<button class="btn btn-icon btn-link btn-primary btn-xs"><span class="fa fa-times"></span></button>
+												</div>
+											</div>
+											
+										</div>
+										<div class="card-body">
+											<div class="row">
+												<div class="col-md-6">
+													<div class="table-responsive table-hover table-sales">
+														<table class="table">
+															<thead class="thead-dark">
+																<tr>
+																  <th scope="col"><h3>Menu Category</h3></th>
+																  <th scope="col"><h3>Sale</h3></th>
+															
+															  </thead>
+															<tbody>
+																{% if Cat_CM %}
+																{% for x in Cat_CM %}
+																<tr>
+																
+																	<td><h3>{{x.Item}}</h3></td>
+																	<td><h3>{{x.Sales}}</h3></td>
+																
+																  </tr>
+																{% endfor %} 
+																{% endif %}												
+																</tbody>
+														</table>
+													</div>
+												</div>
+												<div class="col-md-6">
+													<div class="card">
+													
+														<div class="card-body">
+															<div class="chart-container">
+																<canvas id="myChart2" style="width:100%;max-width:600px"></canvas>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="row row-card-no-pd">
+								<div class="col-md-12">
+									<div class="card">
+										<div class="card-header">
+											<div class="card-head-row card-tools-still-right">
+												<h4 class="card-title">Product to be bring for Upcoming weekday and weekend</h4>
+												<div class="card-tools">
+													<button class="btn btn-icon btn-link btn-primary btn-xs"><span class="fa fa-angle-down"></span></button>
+													<button class="btn btn-icon btn-link btn-primary btn-xs btn-refresh-card"><span class="fa fa-sync-alt"></span></button>
+													<button class="btn btn-icon btn-link btn-primary btn-xs"><span class="fa fa-times"></span></button>
+												</div>
+											</div>
+											
+										</div>
+										<div class="card-body">
+											<div class="row">
+												<div class="col-md-6">
+													<h2>Weekday Item</h2>
+													<div class="table-responsive table-hover table-sales">
+														<table class="table">
+															<thead class="thead-dark">
+																<tr>
+																  <th scope="col"><h3>Menu Item</h3></th>
+																  <th scope="col"><h3>Quantity</h3></th>
+															
+															  </thead>
+															<tbody>
+																{% if WEEKDAY_LIST %}
+																{% for x in WEEKDAY_LIST %}
+																<tr>
+																
+																	<td><h3>{{x.Items}}</h3></td>
+																	<td><h3>{{x.Qty}}</h3></td>
+																
+																  </tr>
+																{% endfor %} 
+																{% endif %}												
+																</tbody>
+														</table>
+													</div>
+													
+												</div>
+												<div class="col-md-6">
+													<h2>Weekend Item</h2>
+													<div class="table-responsive table-hover table-sales">
+														<table class="table">
+															<thead class="thead-dark">
+																<tr>
+																  <th scope="col"><h3>Menu Item</h3></th>
+																  <th scope="col"><h3>Quantity</h3></th>
+															
+															  </thead>
+															<tbody>
+																{% if WEEKDEND_LIST %}
+																{% for x in WEEKDEND_LIST %}
+																<tr>
+																
+																	<td><h3>{{x.Items}}</h3></td>
+																	<td><h3>{{x.Qty}}</h3></td>
+																
+																  </tr>
+																{% endfor %} 
+																{% endif %}												
+																</tbody>
+														</table>
+													</div>
+													
+														
+													
+
+												</div>
+												
+										</div>
+									</div>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-md-6">
+									<div class="card full-height">
+										<div class="card-header">
+											<div class="card-title">Suggested Supplier</div>
+										</div>
+										<div class="card-body">
+											<ol class="activity-feed">
+												<li class="feed-item feed-item-secondary">
+													<time class="date" datetime="9-25">Sep 25</time>
+													<span class="text">Responded to need <a href="#">"Volunteer opportunity"</a></span>
+												</li>
+												<li class="feed-item feed-item-success">
+													<time class="date" datetime="9-24">Sep 24</time>
+													<span class="text">Added an interest <a href="#">"Volunteer Activities"</a></span>
+												</li>
+												<li class="feed-item feed-item-info">
+													<time class="date" datetime="9-23">Sep 23</time>
+													<span class="text">Joined the group <a href="single-group.php">"Boardsmanship Forum"</a></span>
+												</li>
+												<li class="feed-item feed-item-warning">
+													<time class="date" datetime="9-21">Sep 21</time>
+													<span class="text">Responded to need <a href="#">"In-Kind Opportunity"</a></span>
+												</li>
+												<li class="feed-item feed-item-danger">
+													<time class="date" datetime="9-18">Sep 18</time>
+													<span class="text">Created need <a href="#">"Volunteer Opportunity"</a></span>
+												</li>
+												<li class="feed-item">
+													<time class="date" datetime="9-17">Sep 17</time>
+													<span class="text">Attending the event <a href="single-event.php">"Some New Event"</a></span>
+												</li>
+											</ol>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="card full-height">
+										<div class="card-header">
+											<div class="card-head-row">
+												<div class="card-title">Food Item to bring for Upcoming weekday or weekend</div>
+												<div class="card-tools">
+													<ul class="nav nav-pills nav-secondary nav-pills-no-bd nav-sm" id="pills-tab" role="tablist">
+														<li class="nav-item">
+															<a class="nav-link" id="pills-today" data-toggle="pill" href="#pills-today" role="tab" aria-selected="true">Weekday</a>
+														</li>
+														<li class="nav-item">
+															<a class="nav-link active" id="pills-week" data-toggle="pill" href="#pills-week" role="tab" aria-selected="false">Weekend</a>
+														</li>
+														
+													</ul>
+												</div>
+											</div>
+										</div>
+										<div class="card-body">
+											<div class="d-flex">
+												<div class="avatar avatar-online">
+													<span class="avatar-title rounded-circle border border-white bg-info">J</span>
+												</div>
+												<div class="flex-1 ml-3 pt-1">
+													<h6 class="text-uppercase fw-bold mb-1">Joko Subianto <span class="text-warning pl-3">pending</span></h6>
+													<span class="text-muted">I am facing some trouble with my viewport. When i start my</span>
+												</div>
+												<div class="float-right pt-1">
+													<small class="text-muted">8:40 PM</small>
+												</div>
+											</div>
+											<div class="separator-dashed"></div>
+											<div class="d-flex">
+												<div class="avatar avatar-offline">
+													<span class="avatar-title rounded-circle border border-white bg-secondary">P</span>
+												</div>
+												<div class="flex-1 ml-3 pt-1">
+													<h6 class="text-uppercase fw-bold mb-1">Prabowo Widodo <span class="text-success pl-3">open</span></h6>
+													<span class="text-muted">I have some query regarding the license issue.</span>
+												</div>
+												<div class="float-right pt-1">
+													<small class="text-muted">1 Day Ago</small>
+												</div>
+											</div>
+											<div class="separator-dashed"></div>
+											<div class="d-flex">
+												<div class="avatar avatar-away">
+													<span class="avatar-title rounded-circle border border-white bg-danger">L</span>
+												</div>
+												<div class="flex-1 ml-3 pt-1">
+													<h6 class="text-uppercase fw-bold mb-1">Lee Chong Wei <span class="text-muted pl-3">closed</span></h6>
+													<span class="text-muted">Is there any update plan for RTL version near future?</span>
+												</div>
+												<div class="float-right pt-1">
+													<small class="text-muted">2 Days Ago</small>
+												</div>
+											</div>
+											<div class="separator-dashed"></div>
+											<div class="d-flex">
+												<div class="avatar avatar-offline">
+													<span class="avatar-title rounded-circle border border-white bg-secondary">P</span>
+												</div>
+												<div class="flex-1 ml-3 pt-1">
+													<h6 class="text-uppercase fw-bold mb-1">Peter Parker <span class="text-success pl-3">open</span></h6>
+													<span class="text-muted">I have some query regarding the license issue.</span>
+												</div>
+												<div class="float-right pt-1">
+													<small class="text-muted">2 Day Ago</small>
+												</div>
+											</div>
+											<div class="separator-dashed"></div>
+											<div class="d-flex">
+												<div class="avatar avatar-away">
+													<span class="avatar-title rounded-circle border border-white bg-danger">L</span>
+												</div>
+												<div class="flex-1 ml-3 pt-1">
+													<h6 class="text-uppercase fw-bold mb-1">Logan Paul <span class="text-muted pl-3">closed</span></h6>
+													<span class="text-muted">Is there any update plan for RTL version near future?</span>
+												</div>
+												<div class="float-right pt-1">
+													<small class="text-muted">2 Days Ago</small>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+				</div>
+
+				
+			</div>
+			
+
+			
+ <script>
+	var pie3 = document.getElementById("chart45");
+var chart45 = new chart(pie3, {
+  type: 'pie',
+  data: {
+    labels: ['Breads', 'Starter', 'Desserts', 'Chicken specials', 'Vegetable specials'],
+    datasets: [{
+      label: '# of Tomatoes',
+      data: {{mylistitemim}},
+      backgroundColor: [
+        'rgba(255, 99, 132, 0.5)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)'
+      ],
+      borderColor: [
+        'rgba(255,99,132,1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)'
+      ],
+      borderWidth: 1
+    }]
+  },
+  options: {
+   	//cutoutPercentage: 40,
+    responsive: true,
+
+  }
+});
+  </script>
+
+
+			<!--   Core JS Files   -->
+			<script src="{% static "/assets/js/core/jquery.3.2.1.min.js" %}"></script>
+			<script src="{% static "/assets/js/core/popper.min.js" %}"></script>
+			<script src="{% static "/assets/js/core/bootstrap.min.js"></script>
+
+			<!-- jQuery UI -->
+			<script src="{% static "/assets/js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js" %}"></script>
+			<script src="{% static "/assets/js/plugin/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js" %}"></script>
+
+			<!-- jQuery Scrollbar -->
+			<script src="{% static "/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js" %}"></script>
+
+
+			<!-- Chart JS -->
+			<script src="{% static "/assets/js/plugin/chart.js/chart.min.js" %}"></script>
+
+			<!-- jQuery Sparkline -->
+			<script src="{% static "/assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js" %}"></script>
+
+			<!-- Chart Circle -->
+			<script src="{% static "/assets/js/plugin/chart-circle/circles.min.js" %}"></script>
+
+			<!-- Datatables -->
+			<script src="{% static "/assets/js/plugin/datatables/datatables.min.js" %}"></script>
+
+			<!-- Bootstrap Notify -->
+			<script src="{% static "/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js" %}"></script>
+
+			<!-- jQuery Vector Maps -->
+			<script src="{% static "/assets/js/plugin/jqvmap/jquery.vmap.min.js" %}"></script>
+			<script src="{% static "/assets/js/plugin/jqvmap/maps/jquery.vmap.world.js" %}"></script>
+
+			<!-- Sweet Alert -->
+			<script src="{% static "/assets/js/plugin/sweetalert/sweetalert.min.js" %}"></script>
+
+			<!-- Atlantis JS -->
+			<script src="{% static "/assets/js/atlantis.min.js" %}"></script>
+
+			
+			<script src="{% static "/assets/js/setting-demo.js" %}"></script>
+			<script src="{% static "/assets/js/demo.js" %}"></script>
+			<script>
+				Circles.create({
+					id: 'circles-1',
+					radius: 45,
+					value: {{ TC }},
+					maxValue: 100,
+					width: 7,
+					text: {{ TC }},
+					colors: ['#f1f1f1', '#FF9E27'],
+					duration: 400,
+					wrpClass: 'circles-wrp',
+					textClass: 'circles-text',
+					styleWrapper: true,
+					styleText: true
+				})
+
+				Circles.create({
+					id: 'circles-2',
+					radius: 45,
+					value: {{ OT }},
+					maxValue: 100,
+					width: 7,
+					text: {{ OT }},
+					colors: ['#f1f1f1', '#2BB930'],
+					duration: 400,
+					wrpClass: 'circles-wrp',
+					textClass: 'circles-text',
+					styleWrapper: true,
+					styleText: true
+				})
+
+				Circles.create({
+					id: 'circles-3',
+					radius: 45,
+					value: 40,
+					maxValue: 100,
+					width: 7,
+					text: 12,
+					colors: ['#f1f1f1', '#F25961'],
+					duration: 400,
+					wrpClass: 'circles-wrp',
+					textClass: 'circles-text',
+					styleWrapper: true,
+					styleText: true
+				})
+
+				var totalIncomeChart = document.getElementById('totalIncomeChart').getContext('2d');
+
+				var mytotalIncomeChart = new Chart(totalIncomeChart, {
+					type: 'bar',
+					data: {
+						labels: ["S", "M", "T", "W", "T", "F", "S", "S", "M", "T"],
+						datasets: [{
+							label: "Total Income",
+							backgroundColor: '#ff9e27',
+							borderColor: 'rgb(23, 125, 255)',
+							data: [6, 4, 9, 5, 4, 6, 4, 3, 8, 10],
+						}],
+					},
+					options: {
+						responsive: true,
+						maintainAspectRatio: false,
+						legend: {
+							display: false,
+						},
+						scales: {
+							yAxes: [{
+								ticks: {
+									display: false //this will remove only the label
+								},
+								gridLines: {
+									drawBorder: false,
+									display: false
+								}
+							}],
+							xAxes: [{
+								gridLines: {
+									drawBorder: false,
+									display: false
+								}
+							}]
+						},
+					}
+				});
+
+				$('#lineChart').sparkline([105, 103, 123, 100, 95, 105, 115], {
+					type: 'line',
+					height: '70',
+					width: '100%',
+					lineWidth: '2',
+					lineColor: '#ffa534',
+					fillColor: 'rgba(255, 165, 52, .14)'
+				});
+			</script>
+
+
+	
+
+
+<script>
+	var ctx = document.getElementById("myChart2");
+var myChart2 = new Chart(ctx, {
+  type: 'pie',
+  data: {
+    labels: ['Breads', 'Starter', 'Desserts', 'Chicken specials', 'Vegetable specials'],
+    datasets: [{
+      label: '# of Tomatoes',
+      data: {{CatM}},
+      backgroundColor: [
+        'rgba(255, 99, 132, 0.5)',
+        'rgba(54, 162, 235, 0.2)',
+        'rgba(255, 206, 86, 0.2)',
+        'rgba(75, 192, 192, 0.2)'
+      ],
+      borderColor: [
+        'rgba(255,99,132,1)',
+        'rgba(54, 162, 235, 1)',
+        'rgba(255, 206, 86, 1)',
+        'rgba(75, 192, 192, 1)'
+      ],
+      borderWidth: 1
+    }]
+  },
+  options: {
+   	//cutoutPercentage: 40,
+    responsive: true,
+
+  }
+});
+  </script>
+
+	
+</body>
+</html>
